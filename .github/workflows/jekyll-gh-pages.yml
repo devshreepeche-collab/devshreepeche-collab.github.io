@@ -31,20 +31,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       
-      - name: Setup Jekyll
+      - name: Setup Jekyll and Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.1' # Use a modern Ruby version
-          bundler-cache: true # Caches gems for faster builds
+          ruby-version: '3.1'
+          bundler-cache: true # This finds Gemfile, installs gems, and caches them
           
-      - name: Install dependencies
-        # This needs to install the theme's gems
-        run: |
-          gem install jekyll-remote-theme
-          bundle install
-      
       - name: Build site with Jekyll
-        # We need to explicitly set the theme for the build
+        # 'bundle exec' uses the gems installed from the Gemfile
         run: |
           bundle exec jekyll build --config _config.yml,<(echo "remote_theme: pages-themes/minimal@v0.2.0")
         
@@ -68,15 +62,17 @@ jobs:
         with:
           name: jekyll-site
           path: ./_site
+
+      - name: Setup Ruby for testing
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1'
+          bundler-cache: true # This will install html-proofer from Gemfile
           
       - name: Run HTMLProofer (Link Checker)
-        # This "gem" is a tool that spiders your site
-        # and checks all internal and external links.
+        # 'bundle exec' now runs the version from our Gemfile
         run: |
-          gem install html-proofer
-          # Run the test. Fails if any links are broken!
-          # We add --disable-external to speed it up.
-          html-proofer ./_site --disable-external --allow-hash-href
+          bundle exec html-proofer ./_site --disable-external --allow-hash-href
 
   # -----------------
   #  3. DEPLOY JOB
@@ -94,3 +90,4 @@ jobs:
           
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
+
