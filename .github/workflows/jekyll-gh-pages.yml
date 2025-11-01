@@ -30,25 +30,25 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
+
       - name: Setup Jekyll and Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.1'
           bundler-cache: true # This finds Gemfile, installs gems, and caches them
-          
+
       - name: Build site with Jekyll
         # 'bundle exec' uses the gems installed from the Gemfile
         run: |
           bundle exec jekyll build --config _config.yml,<(echo "remote_theme: pages-themes/minimal@v0.2.0")
-        
+
       - name: Upload artifact
         # Saves the built site ('_site' folder) for other jobs
         uses: actions/upload-artifact@v4
         with:
           name: jekyll-site
           path: ./_site
-  
+
   # -----------------
   #  2. TEST JOB
   # -----------------
@@ -68,7 +68,7 @@ jobs:
         with:
           ruby-version: '3.1'
           bundler-cache: true # This will install html-proofer from Gemfile
-          
+
       - name: Run HTMLProofer (Link Checker)
         # 'bundle exec' now runs the version from our Gemfile
         run: |
@@ -81,12 +81,12 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: test # This job only runs after 'test' succeeds
-    
+
     steps:
       - name: Download the built site
         uses: actions/download-artifact@v4
         with:
           name: jekyll-site
-          
+
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
