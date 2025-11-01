@@ -35,7 +35,9 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.1'
-          bundler-cache: true # This finds Gemfile, installs gems, and caches them
+          # This finds Gemfile, installs gems, and caches them
+          # This is where the 'exit code 4' was happening
+          bundler-cache: true 
 
       - name: Build site with Jekyll
         # 'bundle exec' uses the gems installed from the Gemfile
