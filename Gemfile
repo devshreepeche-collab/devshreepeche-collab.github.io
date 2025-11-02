@@ -1,8 +1,9 @@
-source "https://rubygems.org"
+# This is the correct source line
+source "[https://rubygems.org](https://rubygems.org)"
 
-gem "jekyll", "~> 4.3.2"
-gem "html-proofer", "~> 5.0"
+gem "jekyll"
+gem "jekyll-remote-theme"
+gem "html-proofer"
 
-group :jekyll_plugins do
-  gem "jekyll-remote-theme", "~> 0.4.3"
-end
+# THIS WAS THE MISSING LINE that caused your last error
+gem "jekyll-theme-minimal"
