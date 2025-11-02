@@ -36,13 +36,13 @@ jobs:
         with:
           ruby-version: '3.1'
           # This finds Gemfile, installs gems, and caches them
-          # This is where the 'exit code 4' was happening
           bundler-cache: true 
 
       - name: Build site with Jekyll
-        # 'bundle exec' uses the gems installed from the Gemfile
+        # This is FIX 2: A simple, correct build command.
+        # It reads all config from _config.yml
         run: |
-          bundle exec jekyll build --config _config.yml,<(echo "remote_theme: pages-themes/minimal@v0.2.0")
+          bundle exec jekyll build
 
       - name: Upload artifact
         # Saves the built site ('_site' folder) for other jobs
