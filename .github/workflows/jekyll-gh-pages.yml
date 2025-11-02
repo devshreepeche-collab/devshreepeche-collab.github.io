@@ -89,6 +89,19 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: jekyll-site
+         
 
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
+
+      - name: Send Discord notification on success
+        uses: sarisia/actions-status-discord@v1
+        if: success() # Only run if the deploy was successful
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          title: "✅ Deploy Successful!"
+          description: "A new version of the blog is live."
+          # This is FIX 3, the 'url' is finally correct
+          url: "[https://your-username.github.io](https://your-username.github.io)" 
+          color: 0x00FF00 # Green
+
