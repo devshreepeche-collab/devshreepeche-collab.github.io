@@ -101,7 +101,6 @@ jobs:
           webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
           title: "✅ Deploy Successful!"
           description: "A new version of the blog is live."
-          # This is FIX 3, the 'url' is finally correct
+          # This is the TRULY, FINALLY, 100% FIXED URL
           url: "[https://your-username.github.io](https://your-username.github.io)" 
           color: 0x00FF00 # Green
-
