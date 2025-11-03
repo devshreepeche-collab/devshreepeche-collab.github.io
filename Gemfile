@@ -1,7 +1,9 @@
 source "https://rubygems.org"
 
-gem "jekyll"
-gem "jekyll-remote-theme"
+gem "jekyll", "~> 4.3.2"
+gem "jekyll-remote-theme", "~> 0.4.3"
 gem "html-proofer"
 gem "jekyll-theme-minimal"
-gem "sass-embedded", "~> 1.68", platform: :ruby
+
+# ✅ Fix for failing sass-embedded on GitHub Actions Ruby 3.1
+gem "sass-embedded", "1.70.0"
