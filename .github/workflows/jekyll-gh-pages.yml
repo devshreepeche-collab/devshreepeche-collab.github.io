@@ -1,65 +1,51 @@
-# This is your new file: .github/workflows/jekyll.yml
-
 name: Deploy Jekyll Site with Link Check
 
-# Run this workflow on pushes to the 'main' branch
 on:
   push:
     branches: ["main"]
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# Grant permissions for the workflow to deploy to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Only allow one deployment at a time
 concurrency:
   group: "pages"
   cancel-in-progress: true
 
 jobs:
-  # -----------------
-  #  1. BUILD JOB
-  # -----------------
-  # Builds the Jekyll site
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Jekyll and Ruby
+      - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.1'
-          # This finds Gemfile, installs gems, and caches them
-          bundler-cache: true 
+          bundler-cache: true
+
+      - name: Install dependencies
+        run: |
+          bundle install --jobs 4 --retry 3
 
       - name: Build site with Jekyll
-        # This is FIX 2: A simple, correct build command.
-        # It reads all config from _config.yml
         run: |
-          bundle exec jekyll build
+          bundle exec jekyll build --safe
 
-      - name: Upload artifact
-        # Saves the built site ('_site' folder) for other jobs
+      - name: Upload built site
         uses: actions/upload-artifact@v4
         with:
           name: jekyll-site
           path: ./_site
 
-  # -----------------
-  #  2. TEST JOB
-  # -----------------
-  # Checks the built site for broken links
   test:
     runs-on: ubuntu-latest
-    needs: build # This job only runs after 'build' succeeds
+    needs: build
     steps:
-      - name: Download the built site
+      - name: Download built site
         uses: actions/download-artifact@v4
         with:
           name: jekyll-site
@@ -69,38 +55,34 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.1'
-          bundler-cache: true # This will install html-proofer from Gemfile
+          bundler-cache: true
 
       - name: Run HTMLProofer (Link Checker)
-        # 'bundle exec' now runs the version from our Gemfile
         run: |
-          bundle exec html-proofer ./_site --disable-external --allow-hash-href
+          bundle exec htmlproofer ./_site --disable-external --allow-hash-href
 
-  # -----------------
-  #  3. DEPLOY JOB
-  # -----------------
-  # Deploys the site to GitHub Pages
   deploy:
     runs-on: ubuntu-latest
-    needs: test # This job only runs after 'test' succeeds
-
+    needs: test
     steps:
-      - name: Download the built site
+      - name: Download built site
         uses: actions/download-artifact@v4
         with:
           name: jekyll-site
-         
+          path: ./_site
 
       - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v4
-        
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./_site
+
       - name: Send Discord notification on success
+        if: success()
         uses: sarisia/actions-status-discord@v1
-        if: success() # Only run if the deploy was successful
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
           title: "✅ Deploy Successful!"
           description: "A new version of the blog is live."
-          # This is the TRULY, FINALLY, 100% CORRECTED URL
-          url: "[https://your-username.github.io](https://your-username.github.io)" 
-          color: 0x00FF00 # Green
+          url: "https://your-username.github.io"
+          color: 0x00FF00
