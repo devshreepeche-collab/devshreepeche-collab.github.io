@@ -25,15 +25,13 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.1'
-          bundler-cache: false    # ⬅️ changed here
+          bundler-cache: true   # ✅ use cache to avoid reinstall every time
 
       - name: Install dependencies
-        run: |
-          bundle install --jobs 4 --retry 3
+        run: bundle install
 
       - name: Build site with Jekyll
-        run: |
-          bundle exec jekyll build --safe
+        run: bundle exec jekyll build
 
       - name: Upload built site
         uses: actions/upload-artifact@v4
@@ -55,11 +53,13 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.1'
-          bundler-cache: false    # ⬅️ and here
+          bundler-cache: true   # ✅ must match the build job
+
+      - name: Install dependencies
+        run: bundle install     # ✅ missing in your file earlier
 
       - name: Run HTMLProofer (Link Checker)
-        run: |
-          bundle exec htmlproofer ./_site --disable-external --allow-hash-href
+        run: bundle exec htmlproofer ./_site --disable-external --allow-hash-href
 
   deploy:
     runs-on: ubuntu-latest
@@ -84,4 +84,4 @@ jobs:
           webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
           title: "✅ Deploy Successful!"
           description: "A new version of the blog is live."
-          url: "https://your-username.github.io"
+          url: "https://chinmay2975-crypto.github.io"   # ✅ replace with your actual site URL
