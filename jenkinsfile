@@ -1,0 +1,32 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/devshreepeche-collab/devshreepeche-collab.github.io.git'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'bundle install'
+                sh 'bundle exec jekyll build'
+            }
+        }
+        stage('Test Links') {
+            steps {
+                sh 'bundle exec htmlproofer ./_site --disable-external'
+            }
+        }
+        stage('Docker Build') {
+            steps {
+                sh 'docker build -t jekyll-site .'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying via GitHub Pages (handled by Actions)'
+            }
+        }
+    }
+}
