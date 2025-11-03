@@ -25,7 +25,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.1'
-          bundler-cache: true
+          bundler-cache: false    # ⬅️ changed here
 
       - name: Install dependencies
         run: |
@@ -55,7 +55,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.1'
-          bundler-cache: true
+          bundler-cache: false    # ⬅️ and here
 
       - name: Run HTMLProofer (Link Checker)
         run: |
@@ -85,4 +85,3 @@ jobs:
           title: "✅ Deploy Successful!"
           description: "A new version of the blog is live."
           url: "https://your-username.github.io"
-          color: 0x00FF00
