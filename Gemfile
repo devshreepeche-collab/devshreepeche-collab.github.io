@@ -4,4 +4,4 @@ gem "jekyll"
 gem "jekyll-remote-theme"
 gem "html-proofer"
 gem "jekyll-theme-minimal"
-gem "jekyll-seo-tag"   # ← ADD THIS LINE
+gem "sass-embedded", "~> 1.68", platform: :ruby
