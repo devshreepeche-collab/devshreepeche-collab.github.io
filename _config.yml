@@ -4,3 +4,7 @@ description: A short description for your blog.
 
 plugins:
   - jekyll-seo-tag
+social:
+  github: https://github.com/your-username
+  linkedin: https://www.linkedin.com/in/your-username
+  twitter: https://twitter.com/your-username
